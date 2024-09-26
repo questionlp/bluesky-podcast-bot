@@ -1,0 +1,20 @@
+[
+    {
+        "name": "",
+        "database_file": "feed_info.sqlite3",
+        "database_clean_days": 90,
+        "recent_days": 5,
+        "max_episodes": 50,
+        "log_file": "logs/podcast_bot.log",
+        "max_description_length": 150,
+        "podcast_feed_url": "",
+        "short_name": "",
+        "podcast_guid_filter": null,
+        "bluesky_api_url": "",
+        "bluesky_username": "",
+        "bluesky_password": "",
+        "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0",
+        "template_directory": "templates",
+        "template_file": "post.txt.jinja"
+    }
+]

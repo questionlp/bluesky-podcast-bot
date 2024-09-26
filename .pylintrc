@@ -1,0 +1,4 @@
+[design]
+max-args=10
+max-branches=15
+max-nested-blocks=8

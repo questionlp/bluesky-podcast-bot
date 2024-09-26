@@ -1,0 +1,5 @@
+atproto==0.0.54
+podcastparser==0.6.10
+python-dotenv==1.0.1
+html2text==2024.2.26
+Jinja2==3.1.4
