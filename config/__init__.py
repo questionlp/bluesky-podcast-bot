@@ -102,6 +102,9 @@ class AppConfig:
 
         return feeds_settings
 
+    def __str__(self) -> str:
+        return self.__class__.__name__
+
 
 class AppEnvironment:
     """Application environment variables."""
@@ -154,3 +157,6 @@ class AppEnvironment:
         )
 
         return [feed_settings]
+
+    def __str__(self) -> str:
+        return self.__class__.__name__

@@ -20,7 +20,7 @@ from config import AppConfig, AppEnvironment, FeedSettings
 from db import FeedDatabase
 from feed import PodcastFeed
 
-APP_VERSION: str = "1.0.0"
+APP_VERSION: str = "1.0.1"
 logger: logging.Logger = logging.getLogger(__name__)
 
 

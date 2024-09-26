@@ -55,5 +55,5 @@ class AppCommand:
 
         return parser.parse_args()
 
-    def __repr__(self) -> str:
-        return "AppCommand"
+    def __str__(self) -> str:
+        return self.__class__.__name__
