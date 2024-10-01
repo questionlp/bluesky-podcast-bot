@@ -41,8 +41,8 @@ class AppConfig:
     def parse(self, feeds_file: str = "feeds.json") -> list[FeedSettings]:
         """Parse podcast feeds settings."""
         feeds_path = Path.cwd() / feeds_file
-        with feeds_path.open(mode="r", encoding="utf-8") as feeds_file:
-            feeds = json.load(feeds_file)
+        with feeds_path.open(mode="r", encoding="utf-8") as _feeds_file:
+            feeds = json.load(_feeds_file)
             if not feeds:
                 print("ERROR: Podcast Feeds Settings JSON file could not be parsed.")
                 sys.exit(1)
@@ -91,10 +91,7 @@ class AppConfig:
                 max_episodes=int(feed.get("max_episodes", 50)),
                 max_description_length=int(feed.get("max_description_length", 150)),
                 guid_filter=feed.get("podcast_guid_filter", "").strip(),
-                user_agent=feed.get(
-                    "user_agent",
-                    _DEFAULT_USER_AGENT,
-                ).strip(),
+                user_agent=feed.get("user_agent", _DEFAULT_USER_AGENT).strip(),
                 template_directory=feed.get("template_directory", "templates").strip(),
                 template_file=feed.get("template_file", "post.txt.jinja").strip(),
             )
@@ -148,10 +145,7 @@ class AppEnvironment:
             max_episodes=int(dotenv_config.get("MAX_EPISODES", 50)),
             max_description_length=int(dotenv_config.get("MAX_DESCRIPTION_LENGTH", 150)),
             guid_filter=dotenv_config.get("PODCAST_GUID_FILTER", "").strip(),
-            user_agent=dotenv_config.get(
-                "USER_AGENT",
-                _DEFAULT_USER_AGENT,
-            ).strip(),
+            user_agent=dotenv_config.get("USER_AGENT", _DEFAULT_USER_AGENT).strip(),
             template_directory=dotenv_config.get("POST_TEMPLATE_DIR", "templates").strip(),
             template_file=dotenv_config.get("POST_TEMPLATE", "post.txt.jinja").strip(),
         )

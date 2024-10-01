@@ -20,7 +20,7 @@ from config import AppConfig, AppEnvironment, FeedSettings
 from db import FeedDatabase
 from feed import PodcastFeed
 
-APP_VERSION: str = "1.0.1"
+APP_VERSION: str = "1.0.2"
 logger: logging.Logger = logging.getLogger(__name__)
 
 
@@ -69,7 +69,8 @@ def retrieve_new_episodes(
 
                     episodes.append(info)
                     logger.debug(
-                        "Episode Info for GUID {guid}:\n%s",
+                        "Episode Info for GUID %s:\n%s",
+                        guid,
                         pformat(info, sort_dicts=False, compact=True),
                     )
 
