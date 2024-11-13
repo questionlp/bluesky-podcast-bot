@@ -33,6 +33,7 @@ class FeedSettings(NamedTuple):
     user_agent: str = _DEFAULT_USER_AGENT
     template_directory: str = "templates"
     template_file: str = "post.txt.jinja"
+    enabled: bool = True
 
 
 class AppConfig:
@@ -80,6 +81,7 @@ class AppConfig:
             feed_settings = FeedSettings(
                 name=feed["feed_name"].strip(),
                 podcast_name=feed["podcast_name"].strip(),
+                enabled=bool(feed.get("enabled", True)),
                 feed_url=feed["podcast_feed_url"].strip(),
                 bluesky_api_url=feed["bluesky_api_url"].strip(),
                 bluesky_username=feed["bluesky_username"].strip(),
@@ -134,6 +136,7 @@ class AppEnvironment:
         feed_settings = FeedSettings(
             name=dotenv_config.get("PODCAST_NAME").strip(),
             podcast_name=dotenv_config.get("PODCAST_NAME").strip(),
+            enabled=bool(dotenv_config.get("ENABLED", True)),
             feed_url=dotenv_config.get("PODCAST_FEED_URL").strip(),
             bluesky_api_url=dotenv_config.get("BLUESKY_API_URL").strip(),
             bluesky_username=dotenv_config.get("BLUESKY_USERNAME").strip(),

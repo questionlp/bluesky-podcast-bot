@@ -20,7 +20,7 @@ from config import AppConfig, AppEnvironment, FeedSettings
 from db import FeedDatabase
 from feed import PodcastFeed
 
-APP_VERSION: str = "1.0.2"
+APP_VERSION: str = "1.1.0"
 logger: logging.Logger = logging.getLogger(__name__)
 
 
@@ -165,75 +165,76 @@ def main() -> None:
     dry_run: bool = arguments.dry_run
 
     for feed in feeds:
-        if feed.log_file:
-            log_handler: logging.FileHandler = logging.FileHandler(feed.log_file)
-            log_format: logging.Formatter = logging.Formatter(
-                fmt="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-            )
-            log_handler.setFormatter(log_format)
-            if arguments.debug:
-                logger.setLevel(logging.DEBUG)
-            else:
-                logger.setLevel(logging.INFO)
-
-            logger.addHandler(log_handler)
-
-        logger.debug("Starting")
-        if dry_run:
-            logger.debug("Dry run: true")
-
-        logger.debug("Podcast Name: %s", feed.podcast_name)
-
-        # Check to see if the feed database file exists. Create file if
-        # the file does not exist
-        feed_database: FeedDatabase = FeedDatabase(feed.database_file)
-
-        # Pull episodes from the configured podcast feed
-        podcast: PodcastFeed = PodcastFeed()
-        episodes: list[dict[str, Any]] = podcast.fetch(
-            feed_url=feed.feed_url,
-            max_episodes=feed.max_episodes,
-            user_agent=feed.user_agent,
-        )
-        logger.debug("Feed URL: %s", feed.feed_url)
-
-        if episodes:
-            new_episodes: list[dict[str, Any]] = retrieve_new_episodes(
-                feed_episodes=episodes,
-                feed_database=feed_database,
-                feed_name=feed.name,
-                guid_filter=feed.guid_filter,
-                days=feed.recent_days,
-                dry_run=dry_run,
-            )
-            new_episodes.reverse()
-
-            logger.debug("New Episodes:\n%s", pformat(new_episodes))
-
-            for episode in new_episodes:
-                episode["title"] = unsmart_quotes(text=episode["title"])
-                post_text: str = format_post(
-                    podcast_name=feed.podcast_name,
-                    episode=episode,
-                    max_description_length=feed.max_description_length,
-                    template_path=feed.template_directory,
-                    template_file=feed.template_file,
+        if feed.enabled:
+            if feed.log_file:
+                log_handler: logging.FileHandler = logging.FileHandler(feed.log_file)
+                log_format: logging.Formatter = logging.Formatter(
+                    fmt="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
                 )
-                if not dry_run:
-                    logger.info("Posting %s.", episode)
-                    bluesky = BlueskyClient(
-                        api_url=feed.bluesky_api_url,
-                        username=feed.bluesky_username,
-                        password=feed.bluesky_password,
+                log_handler.setFormatter(log_format)
+                if arguments.debug:
+                    logger.setLevel(logging.DEBUG)
+                else:
+                    logger.setLevel(logging.INFO)
+
+                logger.addHandler(log_handler)
+
+            logger.debug("Starting")
+            if dry_run:
+                logger.debug("Dry run: true")
+
+            logger.debug("Podcast Name: %s", feed.podcast_name)
+
+            # Check to see if the feed database file exists. Create file if
+            # the file does not exist
+            feed_database: FeedDatabase = FeedDatabase(feed.database_file)
+
+            # Pull episodes from the configured podcast feed
+            podcast: PodcastFeed = PodcastFeed()
+            episodes: list[dict[str, Any]] = podcast.fetch(
+                feed_url=feed.feed_url,
+                max_episodes=feed.max_episodes,
+                user_agent=feed.user_agent,
+            )
+            logger.debug("Feed URL: %s", feed.feed_url)
+
+            if episodes:
+                new_episodes: list[dict[str, Any]] = retrieve_new_episodes(
+                    feed_episodes=episodes,
+                    feed_database=feed_database,
+                    feed_name=feed.name,
+                    guid_filter=feed.guid_filter,
+                    days=feed.recent_days,
+                    dry_run=dry_run,
+                )
+                new_episodes.reverse()
+
+                logger.debug("New Episodes:\n%s", pformat(new_episodes))
+
+                for episode in new_episodes:
+                    episode["title"] = unsmart_quotes(text=episode["title"])
+                    post_text: str = format_post(
+                        podcast_name=feed.podcast_name,
+                        episode=episode,
+                        max_description_length=feed.max_description_length,
+                        template_path=feed.template_directory,
+                        template_file=feed.template_file,
                     )
-                    bluesky.post(body=post_text, episode_url=episode["url"])
+                    if not dry_run:
+                        logger.info("Posting %s.", episode)
+                        bluesky = BlueskyClient(
+                            api_url=feed.bluesky_api_url,
+                            username=feed.bluesky_username,
+                            password=feed.bluesky_password,
+                        )
+                        bluesky.post(body=post_text, episode_url=episode["url"])
 
-        if not dry_run or not arguments.skip_clean:
-            feed_database.clean(days_to_keep=feed.database_clean_days)
+            if not dry_run or not arguments.skip_clean:
+                feed_database.clean(days_to_keep=feed.database_clean_days)
 
-        logger.debug("Finished")
-        log_handler.close()
-        logger.removeHandler(log_handler)
+            logger.debug("Finished")
+            log_handler.close()
+            logger.removeHandler(log_handler)
 
 
 if __name__ == "__main__":

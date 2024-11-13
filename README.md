@@ -46,6 +46,7 @@ Once the dependencies have been installed, make a copy of the `.env.dist` file a
 |---------|-------------|
 | PODCAST_NAME | Name of the podcast to be included in the post. |
 | PODCAST_FEED_URL | URL for the podcast feed to retrieve and parse episodes. |
+| ENABLED | Flag to set whether or enable or disable processing of the podcast feed (Default: false) |
 | BLUESKY_API_URL | Bluesky API base URL. |
 | BLUESKY_USERNAME | Bluesky account username. |
 | BLUESKY_PASSWORD | Bluesky account password, or preferrably, app password. |
@@ -69,6 +70,7 @@ The `feeds.json` file needs to be a valid JSON file that contains an array of ob
 | Attribute | Description |
 |---------|-------------|
 | name | Name of the podcast to be included in the post. |
+| enabled | Flag to set whether or enable or disable processing of the podcast feed (Default: false) |
 | database_file | Location of the SQLite3 file that will be used to store episodes that the script has already been processed. |
 | database_clean_days | Number of days to keep records in the SQLite3. Used by the clean-up function to remove older entries. This value should be greater than the value set for `recent_days`. (Default: 90) |
 | recent_days | Number of days in a podcast RSS feed to process. Any episodes older than that will be skipped. (Default: 5) |
